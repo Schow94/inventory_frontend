@@ -21,23 +21,13 @@ export default class Item extends Component {
   handleDelete = () => {
     // e.preventDefault();
     this.props.deleteItem(this.props.item.id);
-    console.log('clicked');
   };
 
   handleChange = (e) => {
     e.preventDefault();
-    this.setState(
-      {
-        [e.target.name]: e.target.value,
-      },
-      () => {
-        console.log(
-          this.state.name,
-          this.state.description,
-          this.state.quantity
-        );
-      }
-    );
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
   };
 
   saveChanges = () => {

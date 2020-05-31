@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 // import * as actions from './actions';
-import { fetchInventory } from './actions';
+import { fetchInventory, addItem, deleteItem, editItem } from './actions';
 import InventoryList from './InventoryList';
 import AddItemForm from './AddItemForm';
 
@@ -14,69 +14,54 @@ class InventoryApp extends Component {
     };
   }
 
-  // getInventory = async () => {
-  //   let res = await axios.get('http://localhost:5000/items/');
-  //   this.setState({
-  //     inventory: [...res.data],
+  // editItem = async (itemId, name, description, quantity) => {
+  //   let res = await axios({
+  //     method: 'patch',
+  //     url: `http://localhost:5000/items/${itemId}`,
+  //     data: {
+  //       name: name,
+  //       description: description,
+  //       quantity: quantity,
+  //     },
   //   });
+  //   this.props.fetchInventory();
   // };
-
-  addItem = async (name, description, quantity) => {
-    let res = await axios({
-      method: 'post',
-      url: 'http://localhost:5000/items/',
-      data: {
-        name: name,
-        description: description,
-        quantity: quantity,
-      },
-    });
-    this.getInventory();
-  };
-
-  deleteItem = async (itemId) => {
-    let res = await axios({
-      method: 'delete',
-      url: `http://localhost:5000/items/${itemId}`,
-    });
-    this.getInventory();
-  };
-
-  editItem = async (itemId, name, description, quantity) => {
-    let res = await axios({
-      method: 'patch',
-      url: `http://localhost:5000/items/${itemId}`,
-      data: {
-        name: name,
-        description: description,
-        quantity: quantity,
-      },
-    });
-    this.props.fetchInventory();
-  };
 
   componentDidMount() {
     this.props.fetchInventory();
+    // Items isn't being updated properly either in reducer or action creator
+    console.log(this.props.items);
   }
 
   render() {
     return (
       <>
         <h1>Inventory</h1>
-        <AddItemForm addItem={this.addItem} />
+        <AddItemForm addItem={this.props.addItem} />
         <InventoryList
           // Inventory coming from Redux now
           items={this.props.items}
-          deleteItem={this.deleteItem}
-          editItem={this.editItem}
+          deleteItem={this.props.deleteItem}
+          editItem={this.props.editItem}
         />
       </>
     );
   }
 }
 
-const mapStateToProps = ({ items }) => {
-  return { items };
+// const mapStateToProps = ({ items }) => {
+//   return { items };
+// };
+
+const mapStateToProps = (state) => {
+  return {
+    items: state.items,
+  };
 };
 
-export default connect(mapStateToProps, { fetchInventory })(InventoryApp);
+export default connect(mapStateToProps, {
+  fetchInventory,
+  addItem,
+  deleteItem,
+  editItem,
+})(InventoryApp);
